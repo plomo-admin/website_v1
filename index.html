@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Plomo.ai — AI coordination for M&amp;A transactions</title>
+    <meta
+      name="description"
+      content="Plomo.ai is an AI process layer for M&amp;A transactions that keeps teams aligned, identifies blockers, and drives the deal forward. Join early access."
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Overpass:wght@300;400;500;600;700&display=swap");
+      :root {
+        color-scheme: light;
+        --bg: #f6e6d3;
+        --panel: rgba(10, 12, 16, 0.06);
+        --panel-border: rgba(10, 12, 16, 0.12);
+        --text: #18141f;
+        --muted: #5a5368;
+        --accent: #a61e0e;
+        --accent-2: #a61e0e;
+        --accent-3: #f4e5d3;
+        --accent-border: rgba(166, 30, 14, 0.28);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Overpass", "SF Pro Text", system-ui, -apple-system, sans-serif;
+        font-weight: 300;
+        letter-spacing: -0.05em;
+        color: var(--text);
+        background: var(--bg);
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      ::selection {
+        background: rgba(166, 30, 14, 0.18);
+        color: #0b0a14;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      .background {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        z-index: -1;
+      }
+
+      #bgCanvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .bottom-band-bg {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: var(--band-start, 0px);
+        bottom: 0;
+        background: #fcf8f4;
+        border-top: 1px solid rgba(166, 30, 14, 0.18);
+        z-index: -2;
+      }
+
+      .gradient {
+        display: none;
+      }
+
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 48px 24px 80px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 40px;
+      }
+
+      .logo {
+        font-size: clamp(16px, 2.2vw, 22px);
+        font-weight: 300;
+        letter-spacing: 0.4px;
+        text-transform: none;
+        background: none;
+        color: var(--accent-2);
+        text-shadow: none;
+      }
+
+      .badge {
+        font-size: 12px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(166, 30, 14, 0.6);
+        background: linear-gradient(
+          135deg,
+          rgba(246, 230, 211, 0.95),
+          rgba(237, 215, 196, 0.9)
+        );
+        color: #0b0a14;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 2px minmax(260px, 360px);
+        align-items: stretch;
+        gap: 28px;
+      }
+
+      .hero h1 {
+        font-size: clamp(32px, 5vw, 56px);
+        font-weight: 300;
+        line-height: 1.05;
+        margin: 0 0 20px;
+      }
+
+      .hero-copy {
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        margin-top: 22px;
+      }
+
+      .hero p {
+        color: var(--muted);
+        font-size: 18px;
+        line-height: 1.6;
+        margin: 0 0 12px;
+        max-width: 100%;
+      }
+
+      .spark {
+        width: 2px;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(
+          180deg,
+          rgba(166, 30, 14, 0) 0 38%,
+          rgba(166, 30, 14, 1) 38% 62%,
+          rgba(166, 30, 14, 0) 62% 100%
+        );
+        justify-self: center;
+      }
+
+      .scroll-cta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        width: min(240px, 100%);
+        font-size: 14px;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        padding: 18px 20px;
+        border-radius: 999px;
+        border: 1px solid rgba(166, 30, 14, 0.6);
+        color: #0b0a14;
+        background: linear-gradient(
+          135deg,
+          rgba(246, 230, 211, 0.95),
+          rgba(237, 215, 196, 0.9)
+        );
+        margin: auto 0;
+        animation: ctaPulse 3s ease-in-out infinite;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background 0.2s ease, border-color 0.2s ease;
+      }
+
+      .scroll-cta:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(166, 30, 14, 0.12),
+          rgba(166, 30, 14, 0.06)
+        );
+        border-color: rgba(166, 30, 14, 0.75);
+      }
+
+      .scroll-cta .arrow {
+        font-size: 16px;
+        line-height: 1;
+        animation: arrowBounce 1.6s ease-in-out infinite,
+          arrowShift 4s linear infinite;
+      }
+
+      @keyframes ctaPulse {
+        0%,
+        100% {
+          border-color: rgba(166, 30, 14, 0.35);
+        }
+        50% {
+          border-color: rgba(166, 30, 14, 0.75);
+        }
+      }
+
+      @keyframes arrowBounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(6px);
+        }
+      }
+
+      @keyframes arrowShift {
+        0% {
+          color: #a61e0e;
+        }
+        50% {
+          color: #a61e0e;
+        }
+        100% {
+          color: #ffb3b3;
+        }
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 24px;
+        padding: 28px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 20px 50px rgba(15, 15, 25, 0.12);
+      }
+
+      .panel.waitlist {
+        background: rgba(255, 248, 244, 0.95);
+        border-color: rgba(166, 30, 14, 0.28);
+        box-shadow: 0 24px 70px rgba(15, 15, 25, 0.18),
+          0 0 0 1px rgba(166, 30, 14, 0.1);
+        transition: background 0.2s ease;
+      }
+
+      .panel.waitlist:hover {
+        background: rgba(255, 248, 244, 1);
+      }
+
+      .panel.full {
+        width: 100%;
+      }
+
+      .scroll-spacer {
+        height: calc(20vh + var(--extra-spacer, 0px));
+      }
+
+      .panel.waitlist {
+        margin-top: 128px;
+        max-width: 980px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        grid-column: 1 / -1;
+        justify-self: center;
+      }
+
+      .email-form {
+        display: grid;
+        gap: 12px;
+      }
+
+      .email-form label {
+        font-size: 14px;
+        color: var(--accent-2);
+        font-weight: 500;
+      }
+
+      .email-form input {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(10, 12, 16, 0.12);
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--text);
+        font-size: 16px;
+        outline: none;
+        transition: border 0.2s ease;
+      }
+
+      .email-form input:focus {
+        border: 1px solid rgba(166, 30, 14, 0.85);
+      }
+
+      .email-form button {
+        border: none;
+        border-radius: 12px;
+        padding: 14px 18px;
+        background: #fcf8f4;
+        border: 1px solid rgba(166, 30, 14, 0.35);
+        color: #a61e0e;
+        font-weight: 500;
+        font-size: 16px;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      }
+
+      .email-form button:hover {
+        transform: translateY(-2px);
+        background: rgba(166, 30, 14, 0.04);
+        box-shadow: 0 8px 18px rgba(166, 30, 14, 0.14);
+      }
+
+      .form-note {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .features {
+        margin-top: 0;
+        display: block;
+        overflow: hidden;
+        justify-self: end;
+        width: 100%;
+        position: relative;
+      }
+
+      .features::before,
+      .features::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 10px;
+        background: var(--bg);
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      .features::before {
+        top: -10px;
+      }
+
+      .features::after {
+        bottom: -10px;
+      }
+
+      .feature-track {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        will-change: transform;
+      }
+
+      .problems {
+        margin: 16px auto 0;
+        max-width: 1100px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+      }
+
+      .problems h2 {
+        grid-column: 1 / -1;
+        margin: 0 0 8px;
+        font-size: clamp(22px, 3vw, 32px);
+        text-align: center;
+        font-weight: 300;
+      }
+
+      .problems-divider {
+        grid-column: 1 / -1;
+        width: 120px;
+        height: 2px;
+        background: var(--accent-2);
+        margin: -40px auto 0;
+        border-radius: 999px;
+      }
+
+      .problem-list {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 56px 72px;
+        margin: -60px auto 0;
+        padding: 0;
+        list-style: none;
+        text-align: center;
+        max-width: 900px;
+      }
+
+      .problem-item {
+        font-size: 16px;
+        font-weight: 300;
+        color: var(--muted);
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.4s ease, transform 0.2s ease;
+      }
+
+      .problem-item.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .problem-item:hover {
+        transform: translateY(0) scale(1.03);
+      }
+
+      .problem-item span {
+        display: block;
+        margin-top: 6px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--accent-2);
+      }
+
+      .feature {
+        padding: 20px;
+        border-radius: 18px;
+        border: 1px solid rgba(166, 30, 14, 0.18);
+        background: rgba(246, 230, 211, 0.75);
+        box-shadow: inset 0 0 0 1px rgba(166, 30, 14, 0.04);
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.4s ease, transform 0.4s ease;
+      }
+
+      .feature.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .feature h3 {
+        margin: 0 0 8px;
+        font-size: 16px;
+        font-weight: 300;
+        color: var(--accent-2);
+      }
+
+      .feature p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .status {
+        margin-top: 12px;
+        font-size: 13px;
+        color: var(--accent-2);
+        display: none;
+      }
+
+      footer {
+        margin-top: 80px;
+        color: var(--muted);
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @keyframes drift {
+        0%,
+        100% {
+          transform: translate3d(0, 0, 0);
+        }
+        50% {
+          transform: translate3d(-3%, 2%, 0);
+        }
+      }
+
+
+      @media (max-width: 640px) {
+        main {
+          padding-top: 72px;
+        }
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+        }
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .spark {
+          width: 100%;
+          height: 2px;
+          margin: 8px 0 16px;
+          background: linear-gradient(
+            90deg,
+            rgba(166, 30, 14, 0) 0 38%,
+            rgba(166, 30, 14, 1) 38% 62%,
+            rgba(166, 30, 14, 0) 62% 100%
+          );
+        }
+        .scroll-cta {
+          justify-self: start;
+        }
+        .features {
+          justify-self: stretch;
+        }
+        .problems {
+          margin-top: 48px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background" aria-hidden="true">
+      <canvas id="bgCanvas"></canvas>
+      <div class="gradient"></div>
+    </div>
+    <div class="bottom-band-bg" aria-hidden="true"></div>
+
+    <main>
+      <header>
+        <div class="logo">Plomo.ai</div>
+        <div class="badge">Secure early access</div>
+      </header>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <h1>Most M&amp;A delays are coordination failures.</h1>
+          <p>
+            Win back time and fees with AI that continuously tracks milestones, spots
+            missing inputs, flags blockers, and escalates decisions early, so advisors
+            stay in control and deals stay on schedule.
+          </p>
+          <a class="scroll-cta" href="#waitlistPanel">
+            Join the waitlist <span class="arrow">↓</span>
+          </a>
+        </div>
+
+        <div class="spark" aria-hidden="true"></div>
+
+        <div class="features reveal" id="featureGrid">
+          <div class="feature-track">
+            <div class="feature">
+              <h3>Critical inputs go missing</h3>
+              <p>
+                Key diligence items arrive late or incomplete.<br />
+                Timelines slip while dependencies stack up.
+              </p>
+            </div>
+            <div class="feature">
+              <h3>Owners are unclear</h3>
+              <p>
+                Responsibilities drift across teams and advisors.<br />
+                Hand-offs happen with missing context.
+              </p>
+            </div>
+            <div class="feature">
+              <h3>Escalations happen too late</h3>
+              <p>
+                Blockers surface only after momentum is lost.<br />
+                Deadlines move and fees climb.
+              </p>
+            </div>
+            <div class="feature">
+              <h3>Dependencies are hidden</h3>
+              <p>
+                Tasks appear unblocked until the last moment.<br />
+                Upstream delays quietly derail downstream work.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <section class="problems">
+          <h2>How deals get unstuck</h2>
+          <div class="problems-divider" aria-hidden="true"></div>
+          <ul class="problem-list">
+            <li class="problem-item">
+              Active deal orchestration
+              <span>Self-executing workflows</span>
+            </li>
+            <li class="problem-item">
+              Blockers, surfaced early
+              <span>Early gap detection</span>
+            </li>
+            <li class="problem-item">
+              Multi deal coordination
+              <span>Parallel deal visibility</span>
+            </li>
+          </ul>
+        </section>
+
+        <div class="scroll-spacer" aria-hidden="true"></div>
+
+        <div class="panel full waitlist reveal" id="waitlistPanel">
+          <form class="email-form" id="emailForm">
+            <label for="email">Get early access to Plomo.ai</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="you@company.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit">Join the waitlist</button>
+            <div class="form-note">No spam. Just one launch update.</div>
+            <div class="status" id="status">Thanks! You're on the list.</div>
+          </form>
+        </div>
+      </section>
+
+      <footer>
+        <span>Plomo.ai - Keep deals moving.</span>
+        <span>© 2026 Plomo.ai</span>
+      </footer>
+    </main>
+
+    <script>
+      const form = document.getElementById("emailForm");
+      const status = document.getElementById("status");
+      const waitlistPanel = document.getElementById("waitlistPanel");
+      const featureGrid = document.getElementById("featureGrid");
+      const featureTrack = featureGrid.querySelector(".feature-track");
+      const featureCards = Array.from(featureTrack.children);
+      const problemItems = Array.from(document.querySelectorAll(".problem-item"));
+      const revealTargets = Array.from(document.querySelectorAll(".reveal")).filter(
+        (el) => el !== waitlistPanel
+      );
+
+      const canvas = document.getElementById("bgCanvas");
+      const ctx = canvas.getContext("2d");
+      let nodes = [];
+
+      const createNodes = () => {
+        const count = Math.round((canvas.width * canvas.height) / 36000);
+        nodes = Array.from({ length: count }, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: (Math.random() - 0.5) * 0.6,
+        }));
+
+      };
+
+      const resizeCanvas = () => {
+        const { innerWidth, innerHeight } = window;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = innerWidth * dpr;
+        canvas.height = innerHeight * dpr;
+        canvas.style.width = `${innerWidth}px`;
+        canvas.style.height = `${innerHeight}px`;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        createNodes();
+      };
+
+      const updateBandStart = () => {
+        const pageHeight = document.documentElement.scrollHeight;
+        const rect = waitlistPanel.getBoundingClientRect();
+        const panelCenter = rect.top + window.scrollY + rect.height / 2;
+        const desiredStart = panelCenter * 2 - pageHeight;
+        const minStart = window.innerHeight + 1;
+        const bandStart = Math.max(minStart, desiredStart);
+        const extraSpacer = Math.max(0, (minStart - desiredStart) / 2);
+        document.documentElement.style.setProperty("--extra-spacer", `${extraSpacer}px`);
+        document.documentElement.style.setProperty("--band-start", `${bandStart}px`);
+      };
+
+      const drawNetwork = (timestamp = 0) => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.lineWidth = 1.2;
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        for (let i = 0; i < nodes.length; i += 1) {
+          const node = nodes[i];
+          node.x += node.vx;
+          node.y += node.vy;
+
+          if (node.x < 0 || node.x > width) node.vx *= -1;
+          if (node.y < 0 || node.y > height) node.vy *= -1;
+
+          // Keep nodes subtle so the network feels more active than starry.
+          ctx.fillStyle = "rgba(166, 30, 14, 0.65)";
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, 1.6, 0, Math.PI * 2);
+          ctx.fill();
+
+        }
+
+        ctx.shadowBlur = 0;
+
+        requestAnimationFrame(drawNetwork);
+      };
+
+      const revealObserver = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+
+      revealTargets.forEach((target) => revealObserver.observe(target));
+
+      const revealFeatures = () => {
+        featureCards.forEach((card, index) => {
+          window.setTimeout(() => {
+            card.classList.add("is-visible");
+          }, index * 200);
+        });
+      };
+
+      const updateFeatureHeight = () => {
+          const first = featureTrack.children[0];
+          if (!first) {
+            return { step: 0 };
+          }
+          const gapValue = parseFloat(
+            getComputedStyle(featureTrack).rowGap || getComputedStyle(featureTrack).gap
+          );
+          const cardHeight = first.getBoundingClientRect().height;
+          const gap = Number.isNaN(gapValue) ? 0 : gapValue;
+          featureGrid.style.height = `${cardHeight * 3 + gap * 2}px`;
+          return { step: cardHeight + gap };
+        };
+
+      const initFeatureRotation = () => {
+
+        let { step } = updateFeatureHeight();
+        let isAnimating = false;
+
+        const advance = () => {
+          if (isAnimating || step === 0) {
+            return;
+          }
+          isAnimating = true;
+          featureTrack.style.transition = "transform 0.6s ease";
+          featureTrack.style.transform = `translateY(-${step}px)`;
+          const onEnd = () => {
+            featureTrack.style.transition = "none";
+            featureTrack.appendChild(featureTrack.firstElementChild);
+            featureTrack.style.transform = "translateY(0)";
+            void featureTrack.offsetHeight;
+            isAnimating = false;
+          };
+          featureTrack.addEventListener("transitionend", onEnd, { once: true });
+        };
+
+        const schedule = () => {
+          advance();
+        };
+
+        const intervalId = window.setInterval(schedule, 3600);
+
+        const handleResize = () => {
+          featureTrack.style.transition = "none";
+          featureTrack.style.transform = "translateY(0)";
+          ({ step } = updateFeatureHeight());
+        };
+
+        window.addEventListener("resize", handleResize, { passive: true });
+
+        return () => {
+          window.clearInterval(intervalId);
+          window.removeEventListener("resize", handleResize);
+        };
+      };
+
+      const revealProblems = () => {
+        problemItems.forEach((item, index) => {
+          window.setTimeout(() => {
+            item.classList.add("is-visible");
+          }, index * 1000);
+        });
+      };
+
+      let waitlistShown = false;
+      const revealWaitlist = () => {
+        if (waitlistShown) {
+          return;
+        }
+        if (window.scrollY > 140) {
+          waitlistPanel.classList.add("is-visible");
+          waitlistShown = true;
+        }
+      };
+
+      window.addEventListener("scroll", revealWaitlist, { passive: true });
+      requestAnimationFrame(revealWaitlist);
+      window.addEventListener(
+        "load",
+        () => {
+          updateFeatureHeight();
+          updateBandStart();
+          requestAnimationFrame(() => {
+            updateFeatureHeight();
+            revealFeatures();
+            const featuresDuration = (featureCards.length + 1) * 200;
+            window.setTimeout(() => {
+              revealProblems();
+              initFeatureRotation();
+            }, featuresDuration);
+          });
+        },
+        { once: true }
+      );
+
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("resize", updateBandStart);
+      requestAnimationFrame(drawNetwork);
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const email = form.email.value.trim();
+        if (!email) {
+          return;
+        }
+        const stored = JSON.parse(localStorage.getItem("plomoWaitlist") || "[]");
+        if (!stored.includes(email)) {
+          stored.push(email);
+          localStorage.setItem("plomoWaitlist", JSON.stringify(stored));
+        }
+        status.style.display = "block";
+        form.reset();
+      });
+    </script>
+  </body>
+</html>
