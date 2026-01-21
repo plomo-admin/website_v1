@@ -89,6 +89,36 @@
         margin-bottom: 40px;
       }
 
+      .trust-strip {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 4px 0 12px;
+        padding: 12px 0;
+        color: #2e5f5b;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        border-top: 1px solid rgba(46, 95, 91, 0.2);
+        border-bottom: 1px solid rgba(46, 95, 91, 0.2);
+        align-self: flex-start;
+      }
+
+      .trust-strip span {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .trust-strip span::after {
+        content: "•";
+        opacity: 0.6;
+      }
+
+      .trust-strip span:last-child::after {
+        content: "";
+      }
+
       .logo {
         font-size: clamp(16px, 2.2vw, 22px);
         font-weight: 300;
@@ -325,6 +355,7 @@
         justify-self: end;
         width: 100%;
         position: relative;
+        margin-top: 22px;
       }
 
       .features::before,
@@ -538,6 +569,12 @@
       <section class="hero">
         <div class="hero-copy">
           <h1>Most M&amp;A delays are coordination failures.</h1>
+          <div class="trust-strip" aria-label="Security and compliance">
+            <span>SOC 2 aligned</span>
+            <span>GDPR compliant</span>
+            <span>Pen tested</span>
+            <span>Trusted by advisors</span>
+          </div>
           <p>
             Win back time and fees with AI that continuously tracks milestones, spots
             missing inputs, flags blockers, and escalates decisions early, so advisors
@@ -628,10 +665,17 @@
       </footer>
     </main>
 
-    <script>
+    <script type="module">
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
       const form = document.getElementById("emailForm");
       const status = document.getElementById("status");
       const waitlistPanel = document.getElementById("waitlistPanel");
+      const submitButton = form.querySelector("button[type='submit']");
+      const supabase = createClient(
+        "https://dxpnozverwrogqgzljdl.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4cG5venZlcndyb2dxZ3psamRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5ODQ5OTYsImV4cCI6MjA4NDU2MDk5Nn0.qT68bTzqvFE_RB_IbberwQivlpqy2dJfnRGj4UNf61M"
+      );
       const featureGrid = document.getElementById("featureGrid");
       const featureTrack = featureGrid.querySelector(".feature-track");
       const featureCards = Array.from(featureTrack.children);
@@ -645,12 +689,12 @@
       let nodes = [];
 
       const createNodes = () => {
-        const count = Math.round((canvas.width * canvas.height) / 36000);
+        const count = Math.round((canvas.width * canvas.height) / 24000);
         nodes = Array.from({ length: count }, () => ({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.6,
-          vy: (Math.random() - 0.5) * 0.6,
+          vx: (Math.random() - 0.5) * 1.8,
+          vy: (Math.random() - 0.5) * 1.8,
         }));
 
       };
@@ -827,19 +871,34 @@
       window.addEventListener("resize", updateBandStart);
       requestAnimationFrame(drawNetwork);
 
-      form.addEventListener("submit", (event) => {
+      form.addEventListener("submit", async (event) => {
         event.preventDefault();
         const email = form.email.value.trim();
         if (!email) {
           return;
         }
-        const stored = JSON.parse(localStorage.getItem("plomoWaitlist") || "[]");
-        if (!stored.includes(email)) {
-          stored.push(email);
-          localStorage.setItem("plomoWaitlist", JSON.stringify(stored));
-        }
+        submitButton.disabled = true;
         status.style.display = "block";
-        form.reset();
+        status.textContent = "Adding you to the list...";
+        try {
+          const { error } = await supabase
+            .from("Waitlist_emails")
+            .insert({ email });
+          if (error) {
+            if (error.code === "23505") {
+              status.textContent = "You're already on the list.";
+            } else {
+              status.textContent = "Something went wrong. Try again.";
+            }
+          } else {
+            status.textContent = "Thanks! You're on the list.";
+            form.reset();
+          }
+        } catch (err) {
+          status.textContent = "Something went wrong. Try again.";
+        } finally {
+          submitButton.disabled = false;
+        }
       });
     </script>
   </body>
