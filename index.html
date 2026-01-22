@@ -273,6 +273,13 @@
         box-shadow: 0 24px 70px rgba(15, 15, 25, 0.18),
           0 0 0 1px rgba(166, 30, 14, 0.1);
         transition: background 0.2s ease;
+        margin-top: 128px;
+        max-width: 980px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        grid-column: 1 / -1;
+        justify-self: center;
       }
 
       .panel.waitlist:hover {
@@ -285,16 +292,6 @@
 
       .scroll-spacer {
         height: calc(20vh + var(--extra-spacer, 0px));
-      }
-
-      .panel.waitlist {
-        margin-top: 128px;
-        max-width: 980px;
-        width: 100%;
-        margin-left: auto;
-        margin-right: auto;
-        grid-column: 1 / -1;
-        justify-self: center;
       }
 
       .email-form {
@@ -429,6 +426,14 @@
         opacity: 0;
         transform: translateY(8px);
         transition: opacity 0.4s ease, transform 0.2s ease;
+        display: grid;
+        grid-template-columns: 32px auto;
+        align-items: center;
+        column-gap: 14px;
+        justify-content: center;
+        width: fit-content;
+        margin: 0 auto;
+        text-align: center;
       }
 
       .problem-item.is-visible {
@@ -440,7 +445,34 @@
         transform: translateY(0) scale(1.03);
       }
 
-      .problem-item span {
+      .problem-item::before {
+        content: "";
+        width: 28px;
+        height: 28px;
+        flex: 0 0 28px;
+        background: no-repeat center / contain;
+        margin-top: 0;
+      }
+
+      .problem-item--orchestration::before {
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23a61e0e' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><circle cx='8' cy='4' r='2'/><path d='M8 6.5v5'/><path d='M4.5 10l3.5 2.5L11.5 10'/></svg>");
+      }
+
+      .problem-item--blockers::before {
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23a61e0e' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><path d='M8 2v7'/><path d='M8 12.5v1'/><path d='M4.5 9.5l-2 2'/><path d='M11.5 9.5l2 2'/></svg>");
+      }
+
+      .problem-item--coordination::before {
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23a61e0e' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><circle cx='4' cy='8' r='2'/><circle cx='12' cy='8' r='2'/><path d='M6 8h4'/></svg>");
+      }
+
+      .problem-item-content {
+        display: grid;
+        gap: 6px;
+        text-align: center;
+      }
+
+      .problem-item .problem-subtitle {
         display: block;
         margin-top: 6px;
         font-size: 12px;
@@ -519,16 +551,52 @@
 
 
       @media (max-width: 640px) {
+        html,
+        body {
+          width: 100%;
+          overflow-x: hidden;
+        }
         main {
-          padding-top: 72px;
+          padding: 56px 16px 72px;
+          width: 100%;
+          max-width: 100%;
+          margin: 0;
         }
         header {
-          flex-direction: column;
-          align-items: flex-start;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
           gap: 12px;
+        }
+        .logo {
+          font-size: 20px;
         }
         .hero {
           grid-template-columns: 1fr;
+          min-width: 0;
+          width: 100%;
+          max-width: 100%;
+        }
+        .hero h1 {
+          font-size: clamp(28px, 7.5vw, 40px);
+        }
+        .hero p {
+          font-size: 16px;
+        }
+        .hero-copy {
+          margin-top: 8px;
+          width: 100%;
+        }
+        .trust-strip {
+          font-size: 9px;
+          gap: 8px;
+          max-width: 100%;
+          min-width: 0;
+          display: inline-block;
+          width: fit-content;
+          max-width: max-content;
+          align-self: flex-start;
+          padding-right: 5px;
         }
         .spark {
           width: 100%;
@@ -542,13 +610,62 @@
           );
         }
         .scroll-cta {
-          justify-self: start;
+          align-self: center;
+          margin-left: auto;
+          margin-right: auto;
+          width: 100%;
+          max-width: 280px;
         }
         .features {
           justify-self: stretch;
+          margin-top: 16px;
+          max-width: 100%;
+          min-width: 0;
+          width: 100%;
+        }
+        .feature-track {
+          width: 100%;
+          max-width: 100%;
+          min-width: 0;
+        }
+        .feature {
+          width: 100%;
+          max-width: 100%;
+          min-width: 0;
+        }
+        .panel.waitlist {
+          margin-top: 72px;
+          max-width: 100%;
+          min-width: 0;
+          width: 100%;
         }
         .problems {
-          margin-top: 48px;
+          margin-top: 32px;
+          width: 100%;
+          max-width: 100%;
+          grid-template-columns: 1fr;
+        }
+        .problems-divider {
+          margin: -6px auto 8px;
+        }
+        .problem-list {
+          grid-template-columns: 1fr;
+          gap: 24px;
+          margin: -8px auto 0;
+          max-width: 100%;
+          min-width: 0;
+          width: 100%;
+        }
+        .problem-item {
+          display: grid;
+          grid-template-columns: 1fr;
+          justify-items: center;
+          width: 100%;
+          margin: 0;
+          row-gap: 8px;
+        }
+        .problem-item::before {
+          margin-top: 0;
         }
       }
     </style>
@@ -624,17 +741,23 @@
           <h2>How deals get unstuck</h2>
           <div class="problems-divider" aria-hidden="true"></div>
           <ul class="problem-list">
-            <li class="problem-item">
-              Active deal orchestration
-              <span>Self-executing workflows</span>
+            <li class="problem-item problem-item--orchestration">
+              <div class="problem-item-content">
+                <span class="problem-title">Active deal orchestration</span>
+                <span class="problem-subtitle">Self-executing workflows</span>
+              </div>
             </li>
-            <li class="problem-item">
-              Blockers, surfaced early
-              <span>Early gap detection</span>
+            <li class="problem-item problem-item--blockers">
+              <div class="problem-item-content">
+                <span class="problem-title">Blockers, surfaced early</span>
+                <span class="problem-subtitle">Early gap detection</span>
+              </div>
             </li>
-            <li class="problem-item">
-              Multi deal coordination
-              <span>Parallel deal visibility</span>
+            <li class="problem-item problem-item--coordination">
+              <div class="problem-item-content">
+                <span class="problem-title">Multi deal coordination</span>
+                <span class="problem-subtitle">Parallel deal visibility</span>
+              </div>
             </li>
           </ul>
         </section>
@@ -687,12 +810,16 @@
       const canvas = document.getElementById("bgCanvas");
       const ctx = canvas.getContext("2d");
       let nodes = [];
+      let cssWidth = window.innerWidth;
+      let cssHeight = window.innerHeight;
+      const MAX_NODES = 420;
 
       const createNodes = () => {
-        const count = Math.round((canvas.width * canvas.height) / 24000);
+        const area = cssWidth * cssHeight;
+        const count = Math.min(MAX_NODES, Math.round(area / 24000));
         nodes = Array.from({ length: count }, () => ({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
+          x: Math.random() * cssWidth,
+          y: Math.random() * cssHeight,
           vx: (Math.random() - 0.5) * 1.8,
           vy: (Math.random() - 0.5) * 1.8,
         }));
@@ -701,11 +828,13 @@
 
       const resizeCanvas = () => {
         const { innerWidth, innerHeight } = window;
+        cssWidth = innerWidth;
+        cssHeight = innerHeight;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        canvas.width = innerWidth * dpr;
-        canvas.height = innerHeight * dpr;
-        canvas.style.width = `${innerWidth}px`;
-        canvas.style.height = `${innerHeight}px`;
+        canvas.width = cssWidth * dpr;
+        canvas.height = cssHeight * dpr;
+        canvas.style.width = `${cssWidth}px`;
+        canvas.style.height = `${cssHeight}px`;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         createNodes();
       };
@@ -722,7 +851,7 @@
         document.documentElement.style.setProperty("--band-start", `${bandStart}px`);
       };
 
-      const drawNetwork = (timestamp = 0) => {
+      const drawNetwork = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.lineWidth = 1.2;
         const width = window.innerWidth;
@@ -772,22 +901,27 @@
       };
 
       const updateFeatureHeight = () => {
-          const first = featureTrack.children[0];
-          if (!first) {
-            return { step: 0 };
-          }
-          const gapValue = parseFloat(
-            getComputedStyle(featureTrack).rowGap || getComputedStyle(featureTrack).gap
-          );
-          const cardHeight = first.getBoundingClientRect().height;
-          const gap = Number.isNaN(gapValue) ? 0 : gapValue;
-          featureGrid.style.height = `${cardHeight * 3 + gap * 2}px`;
-          return { step: cardHeight + gap };
-        };
+        const first = featureTrack.children[0];
+        if (!first) {
+          return 0;
+        }
+        const gapValue = parseFloat(
+          getComputedStyle(featureTrack).rowGap || getComputedStyle(featureTrack).gap
+        );
+        const cardHeight = first.getBoundingClientRect().height;
+        const gap = Number.isNaN(gapValue) ? 0 : gapValue;
+        featureGrid.style.height = `${cardHeight * 3 + gap * 2}px`;
+        return cardHeight + gap;
+      };
+
+      const resetFeatureLayout = () => {
+        featureTrack.style.transition = "none";
+        featureTrack.style.transform = "translateY(0)";
+        return updateFeatureHeight();
+      };
 
       const initFeatureRotation = () => {
-
-        let { step } = updateFeatureHeight();
+        let step = updateFeatureHeight();
         let isAnimating = false;
 
         const advance = () => {
@@ -811,20 +945,8 @@
           advance();
         };
 
-        const intervalId = window.setInterval(schedule, 3600);
-
-        const handleResize = () => {
-          featureTrack.style.transition = "none";
-          featureTrack.style.transform = "translateY(0)";
-          ({ step } = updateFeatureHeight());
-        };
-
-        window.addEventListener("resize", handleResize, { passive: true });
-
-        return () => {
-          window.clearInterval(intervalId);
-          window.removeEventListener("resize", handleResize);
-        };
+        window.setInterval(schedule, 3600);
+        return { setStep: (value) => (step = value) };
       };
 
       const revealProblems = () => {
@@ -848,27 +970,38 @@
 
       window.addEventListener("scroll", revealWaitlist, { passive: true });
       requestAnimationFrame(revealWaitlist);
+      let rotationControl = null;
+
+      const onResize = () => {
+        resizeCanvas();
+        updateBandStart();
+        const nextStep = resetFeatureLayout();
+        if (rotationControl) {
+          rotationControl.setStep(nextStep);
+        }
+      };
+
       window.addEventListener(
         "load",
         () => {
-          updateFeatureHeight();
+          resetFeatureLayout();
           updateBandStart();
           requestAnimationFrame(() => {
-            updateFeatureHeight();
+            updateBandStart();
             revealFeatures();
             const featuresDuration = (featureCards.length + 1) * 200;
             window.setTimeout(() => {
               revealProblems();
-              initFeatureRotation();
+              rotationControl = initFeatureRotation();
+              updateBandStart();
             }, featuresDuration);
           });
+          window.addEventListener("resize", onResize, { passive: true });
         },
         { once: true }
       );
 
       resizeCanvas();
-      window.addEventListener("resize", resizeCanvas);
-      window.addEventListener("resize", updateBandStart);
       requestAnimationFrame(drawNetwork);
 
       form.addEventListener("submit", async (event) => {
