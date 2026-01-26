@@ -48,19 +48,6 @@
         scroll-behavior: smooth;
       }
 
-      .background {
-        position: fixed;
-        inset: 0;
-        overflow: hidden;
-        z-index: -1;
-      }
-
-      #bgCanvas {
-        width: 100%;
-        height: 100%;
-        display: block;
-      }
-
       .bottom-band-bg {
         position: absolute;
         left: 0;
@@ -70,10 +57,6 @@
         background: #fcf8f4;
         border-top: 1px solid rgba(166, 30, 14, 0.18);
         z-index: -2;
-      }
-
-      .gradient {
-        display: none;
       }
 
       main {
@@ -671,10 +654,6 @@
     </style>
   </head>
   <body>
-    <div class="background" aria-hidden="true">
-      <canvas id="bgCanvas"></canvas>
-      <div class="gradient"></div>
-    </div>
     <div class="bottom-band-bg" aria-hidden="true"></div>
 
     <main>
@@ -807,38 +786,6 @@
         (el) => el !== waitlistPanel
       );
 
-      const canvas = document.getElementById("bgCanvas");
-      const ctx = canvas.getContext("2d");
-      let nodes = [];
-      let cssWidth = window.innerWidth;
-      let cssHeight = window.innerHeight;
-      const MAX_NODES = 420;
-
-      const createNodes = () => {
-        const area = cssWidth * cssHeight;
-        const count = Math.min(MAX_NODES, Math.round(area / 24000));
-        nodes = Array.from({ length: count }, () => ({
-          x: Math.random() * cssWidth,
-          y: Math.random() * cssHeight,
-          vx: (Math.random() - 0.5) * 1.8,
-          vy: (Math.random() - 0.5) * 1.8,
-        }));
-
-      };
-
-      const resizeCanvas = () => {
-        const { innerWidth, innerHeight } = window;
-        cssWidth = innerWidth;
-        cssHeight = innerHeight;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        canvas.width = cssWidth * dpr;
-        canvas.height = cssHeight * dpr;
-        canvas.style.width = `${cssWidth}px`;
-        canvas.style.height = `${cssHeight}px`;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        createNodes();
-      };
-
       const updateBandStart = () => {
         const pageHeight = document.documentElement.scrollHeight;
         const rect = waitlistPanel.getBoundingClientRect();
@@ -849,33 +796,6 @@
         const extraSpacer = Math.max(0, (minStart - desiredStart) / 2);
         document.documentElement.style.setProperty("--extra-spacer", `${extraSpacer}px`);
         document.documentElement.style.setProperty("--band-start", `${bandStart}px`);
-      };
-
-      const drawNetwork = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.lineWidth = 1.2;
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-
-        for (let i = 0; i < nodes.length; i += 1) {
-          const node = nodes[i];
-          node.x += node.vx;
-          node.y += node.vy;
-
-          if (node.x < 0 || node.x > width) node.vx *= -1;
-          if (node.y < 0 || node.y > height) node.vy *= -1;
-
-          // Keep nodes subtle so the network feels more active than starry.
-          ctx.fillStyle = "rgba(166, 30, 14, 0.65)";
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, 1.6, 0, Math.PI * 2);
-          ctx.fill();
-
-        }
-
-        ctx.shadowBlur = 0;
-
-        requestAnimationFrame(drawNetwork);
       };
 
       const revealObserver = new IntersectionObserver(
@@ -973,7 +893,6 @@
       let rotationControl = null;
 
       const onResize = () => {
-        resizeCanvas();
         updateBandStart();
         const nextStep = resetFeatureLayout();
         if (rotationControl) {
@@ -1000,9 +919,6 @@
         },
         { once: true }
       );
-
-      resizeCanvas();
-      requestAnimationFrame(drawNetwork);
 
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
