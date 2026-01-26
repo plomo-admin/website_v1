@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Plomo.ai — Transactions made simple</title>
+    <meta
+      name="description"
+      content="Plomo.ai — Transactions made simple. Coming soon."
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Overpass:wght@300;400;500;600;700&display=swap");
+
+      :root {
+        color-scheme: light;
+        --bg: #f6e6d3;
+        --text: #18141f;
+        --muted: #5a5368;
+        --accent: #a61e0e;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Overpass", "SF Pro Text", system-ui, -apple-system, sans-serif;
+        font-weight: 300;
+        letter-spacing: -0.05em;
+        color: var(--text);
+        background: var(--bg);
+        display: grid;
+        place-items: center;
+      }
+
+      ::selection {
+        background: rgba(166, 30, 14, 0.18);
+        color: #0b0a14;
+      }
+
+      main {
+        width: min(640px, 90vw);
+        text-align: center;
+        padding: clamp(32px, 6vw, 56px);
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(64px, 12vw, 112px);
+        font-weight: 300;
+        color: var(--accent);
+        letter-spacing: -0.04em;
+      }
+
+      p {
+        margin: 0;
+        font-size: clamp(16px, 2.6vw, 20px);
+        color: var(--muted);
+      }
+
+      .contact {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        margin: 0;
+        font-size: clamp(12px, 2vw, 14px);
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Plomo.ai</h1>
+      <p>Transactions made simple. Coming soon.</p>
+      <p class="contact">admin@plomo.ai</p>
+    </main>
+  </body>
+</html>
