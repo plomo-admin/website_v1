@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Plomo.ai — Agent-driven execution platform for sell-side M&amp;A</title>
+    <meta
+      name="description"
+      content="Plomo.ai is the agent-driven execution platform for sell-side M&A — a transaction operating system that unifies document collection, execution, outreach, and VDR orchestration into one intelligent layer."
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Overpass:wght@300;400;500;600;700&display=swap");
+
+      :root {
+        color-scheme: light;
+        --bg: #f3f4f6;
+        --surface: #ffffff;
+        --surface-soft: #ffffff;
+        --text: #111827;
+        --muted: #6b7280;
+        --accent: #111827;
+        --accent-soft: rgba(17, 24, 39, 0.06);
+        --border-subtle: rgba(156, 163, 175, 0.55);
+        --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.08);
+        --radius-lg: 18px;
+        --radius-full: 999px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Overpass", "SF Pro Text", system-ui, -apple-system, sans-serif;
+        font-weight: 300;
+        letter-spacing: -0.04em;
+        color: var(--text);
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      ::selection {
+        background: rgba(17, 24, 39, 0.08);
+        color: var(--text);
+      }
+
+      main {
+        width: min(1040px, 100%);
+        background: var(--surface);
+        border-radius: 20px;
+        border: 1px solid rgba(209, 213, 219, 0.9);
+        box-shadow: var(--shadow-soft);
+        padding: clamp(24px, 4vw, 36px);
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr);
+        gap: 32px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand img {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        object-fit: contain;
+      }
+
+      .brand-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .brand-name {
+        font-size: 18px;
+        font-weight: 500;
+        letter-spacing: -0.06em;
+      }
+
+      .brand-tagline {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: var(--muted);
+      }
+
+      .contact-chip {
+        font-size: 11px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        color: var(--muted);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+
+      .contact-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+        gap: clamp(24px, 4vw, 40px);
+        align-items: flex-start;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #f9fafb;
+        border: 1px solid rgba(209, 213, 219, 0.9);
+        color: var(--muted);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        margin-bottom: 16px;
+      }
+
+      .eyebrow-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: clamp(40px, 6vw, 60px);
+        font-weight: 400;
+        letter-spacing: -0.08em;
+      }
+
+      .hero-subtitle {
+        margin: 0 0 20px;
+        font-size: 17px;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+
+      .hero-highlight {
+        color: var(--text);
+        font-weight: 400;
+      }
+
+      .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 20px;
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 24px;
+      }
+
+      .hero-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .hero-meta-dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: rgba(148, 163, 184, 0.65);
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 18px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .feature-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: rgba(148, 163, 184, 0.9);
+        margin-bottom: 3px;
+      }
+
+      .feature-item strong {
+        color: var(--text);
+        font-weight: 400;
+      }
+
+      .waitlist-card {
+        background: var(--surface-soft);
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(209, 213, 219, 0.95);
+        padding: 18px 18px 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .waitlist-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 10px;
+        border-radius: var(--radius-full);
+        background: var(--accent-soft);
+        color: var(--muted);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        margin-bottom: 10px;
+      }
+
+      .waitlist-pill-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      .waitlist-title {
+        margin: 0 0 6px;
+        font-size: 18px;
+        font-weight: 400;
+        letter-spacing: -0.05em;
+      }
+
+      .waitlist-copy {
+        margin: 0 0 14px;
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+
+      .waitlist-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .waitlist-input-row {
+        display: flex;
+        gap: 8px;
+      }
+
+      .waitlist-input {
+        flex: 1;
+        min-width: 0;
+        padding: 9px 12px;
+        border-radius: var(--radius-full);
+        border: 1px solid var(--border-subtle);
+        background: #ffffff;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+      }
+
+      .waitlist-input::placeholder {
+        color: rgba(156, 163, 175, 0.9);
+      }
+
+      .waitlist-input:focus {
+        border-color: #111827;
+        box-shadow: 0 0 0 1px rgba(17, 24, 39, 0.25);
+      }
+
+      .waitlist-button {
+        padding: 9px 18px;
+        border-radius: var(--radius-full);
+        border: none;
+        background: #111827;
+        color: #f9fafb;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background-color 0.12s ease-out;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+      }
+
+      .waitlist-button:hover {
+        transform: translateY(-1px);
+        background: #030712;
+        box-shadow: 0 14px 40px rgba(15, 23, 42, 0.22);
+      }
+
+      .waitlist-button:active {
+        transform: translateY(0);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+      }
+
+      .waitlist-footnote {
+        margin: 0;
+        font-size: 11px;
+        color: rgba(107, 114, 128, 0.95);
+      }
+
+      .waitlist-footnote span {
+        color: #111827;
+      }
+
+      .waitlist-background {
+        position: absolute;
+        inset: -40%;
+        opacity: 0;
+        pointer-events: none;
+        background: none;
+      }
+
+      .badge-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 14px;
+        margin-top: 14px;
+        font-size: 11px;
+        color: rgba(148, 163, 184, 0.95);
+      }
+
+      .badge-strip span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .badge-chip {
+        padding: 4px 10px;
+        border-radius: var(--radius-full);
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        background: rgba(15, 23, 42, 0.8);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible {
+        outline: 2px solid rgba(249, 115, 22, 0.8);
+        outline-offset: 2px;
+      }
+
+      @media (max-width: 879px) {
+        body {
+          padding: 16px;
+        }
+
+        main {
+          padding: 20px 18px 22px;
+        }
+
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .layout {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .waitlist-card {
+          order: -1;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .waitlist-input-row {
+          flex-direction: column;
+        }
+
+        .waitlist-button {
+          width: 100%;
+          justify-content: center;
+          display: inline-flex;
+          align-items: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="brand">
+          <img src="logo_full.png" alt="Plomo.ai logo" />
+          <div class="brand-text">
+            <div class="brand-name">Plomo.ai</div>
+            <div class="brand-tagline">Agent-driven transaction OS for M&amp;A</div>
+          </div>
+        </div>
+        <a class="contact-chip" href="mailto:ondrej@plomo.ai?subject=Plomo%20%E2%80%94%20Introduction">
+          <span class="contact-dot"></span>
+          <span>Talk to the founders</span>
+        </a>
+      </header>
+
+      <section class="layout" aria-label="Plomo overview and waitlist">
+        <div>
+          <div class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            <span>Agent-driven execution platform for sell-side M&amp;A</span>
+          </div>
+          <h1>Plomo.ai</h1>
+          <p class="hero-subtitle">
+            <span class="hero-highlight">Agent-driven execution platform for sell-side M&amp;A.</span>
+            Plomo is the transaction operating system that unifies document collection, execution, outreach, and VDR
+            orchestration into one intelligent layer where AI agents run the deal and advisors stay in control.
+          </p>
+          <div class="hero-meta">
+            <span>
+              <span class="hero-meta-dot"></span>
+              Same team, more deals, higher margins
+            </span>
+            <span>
+              <span class="hero-meta-dot"></span>
+              Built with operators who led 50+ transactions
+            </span>
+          </div>
+          <div class="feature-grid" aria-label="Key product pillars">
+            <div class="feature-item">
+              <div class="feature-label">Execution engine</div>
+              <div>
+                <strong>Tracks dependencies &amp; blockers</strong><br />
+                Keeps every workstream aligned, so bottlenecks surface early.
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-label">Document layer</div>
+              <div>
+                <strong>Generates and governs materials</strong><br />
+                From marketing decks to DD requests, with built-in validation.
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-label">Client &amp; buyer portals</div>
+              <div>
+                <strong>Structured, secure intake</strong><br />
+                Real-time visibility for clients and buyers without extra emails.
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-label">Advisory-first design</div>
+              <div>
+                <strong>AI agents, human supervision</strong><br />
+                Advisors approve, override, and steer — the system executes.
+              </div>
+            </div>
+          </div>
+          <div class="badge-strip">
+            <span class="badge-chip">Built for mid-market boutiques</span>
+            <span>Ideal for €20–500m sell-side mandates</span>
+          </div>
+        </div>
+
+        <aside class="waitlist-card" aria-label="Join the Plomo waitlist">
+          <div class="waitlist-background" aria-hidden="true"></div>
+          <div class="waitlist-pill">
+            <span class="waitlist-pill-dot"></span>
+            <span>Limited early access</span>
+          </div>
+          <h2 class="waitlist-title">Join the waitlist</h2>
+          <p class="waitlist-copy">
+            Be among the first advisors to pilot agent-driven execution on live deals. No obligation, priority access
+            to product updates and design sessions with the founding team.
+          </p>
+          <form
+            class="waitlist-form"
+            action="mailto:ondrej@plomo.ai?subject=Plomo%20waitlist"
+            method="post"
+            enctype="text/plain"
+          >
+            <div class="waitlist-input-row">
+              <input
+                class="waitlist-input"
+                type="email"
+                name="email"
+                autocomplete="email"
+                placeholder="Work email"
+                required
+              />
+              <button type="submit" class="waitlist-button">Join waitlist</button>
+            </div>
+            <p class="waitlist-footnote">
+              <span>Founders-led onboarding.</span> We will only reach out with relevant product updates and early-access
+              opportunities.
+            </p>
+          </form>
+        </aside>
+      </section>
+    </main>
+  </body>
+</html>
