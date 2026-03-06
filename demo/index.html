@@ -86,38 +86,80 @@
       .right {
         min-height: 100vh;
         background: #ffffff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 48px;
       }
 
-      .right iframe {
-        width: 100%;
-        height: 100%;
-        min-height: 100vh;
-        border: none;
-        display: block;
+      .right-inner {
+        max-width: 360px;
+        text-align: center;
       }
 
-      .back {
-        position: absolute;
-        top: 24px;
-        left: 24px;
-        font-size: 14px;
-        color: #333333;
-        text-decoration: none;
-        transition: color 0.2s ease;
-      }
-
-      .back:hover {
+      .right h2 {
+        font-size: clamp(24px, 3vw, 32px);
+        font-weight: 400;
+        line-height: 1.35;
+        margin: 0 0 24px;
         color: #000000;
+      }
+
+      .right p {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #333333;
+        margin: 0 0 28px;
+      }
+
+      .right a {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px 24px;
+        border-radius: 999px;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        background: #e5e5e5;
+        color: #000000;
+        font-size: 14px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        text-decoration: none;
+        transition: background 0.2s ease, border-color 0.2s ease;
+      }
+
+      .right a:hover {
+        background: rgba(0, 0, 0, 0.08);
+        border-color: rgba(0, 0, 0, 0.45);
+      }
+
+      body {
+        position: relative;
       }
 
       .left {
         position: relative;
       }
 
+      .logo {
+        position: absolute;
+        top: 24px;
+        left: 24px;
+        z-index: 1;
+      }
+
+      .logo img {
+        height: clamp(28px, 3vw, 36px);
+        width: auto;
+        display: block;
+      }
+
       @media (max-width: 768px) {
         .layout {
           grid-template-columns: 1fr;
-          grid-template-rows: auto 1fr;
+          grid-template-rows: 1fr 1fr;
         }
 
         .left {
@@ -126,17 +168,15 @@
         }
 
         .right {
-          min-height: 60vh;
-        }
-
-        .right iframe {
-          min-height: 60vh;
+          min-height: auto;
         }
       }
     </style>
   </head>
   <body>
-    <a class="back" href="../index_v1.html">← Back</a>
+    <a class="logo" href="../index_v1.html" aria-label="Plomo.ai home">
+      <img src="../logo_full.png" alt="Plomo.ai" />
+    </a>
     <div class="layout">
       <div class="left">
         <div class="left-inner">
@@ -146,10 +186,11 @@
         </div>
       </div>
       <div class="right">
-        <iframe
-          src="https://app.plomo.ai"
-          title="Plomo app"
-        ></iframe>
+        <div class="right-inner">
+          <h2>Already have an account?</h2>
+          <p>Log in to access your Plomo dashboard and continue where you left off.</p>
+          <a href="https://app.plomo.ai" target="_blank" rel="noopener">Log into your account</a>
+        </div>
       </div>
     </div>
   </body>
